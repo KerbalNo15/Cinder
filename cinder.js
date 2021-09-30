@@ -86,7 +86,7 @@ for(let i = 0; i < program.length; i++) {
     console.log(memory[a])
     if(debug) console.log("Printed value at index " + a)
   }
-  //jump to instruction number if the value at index is 0
+  //jump to instruction number if the values in the two specified regisers are equal
   if(program[i] == "jump" || program[i]=="j") {
     //bad workaround to make sure we get the correct memory tag
     let tempCopyOfTag = program[i+1]
@@ -103,8 +103,8 @@ for(let i = 0; i < program.length; i++) {
     if(debug) console.log("Did not jump")
   }
   }
-  //jump to instruction number if the value at index is not 0
-  if(program[i] == "notjump" || program[i]=="!jump") {
+  //jump to instruction number if the values in the two specified regisers are not equal
+  if(program[i] == "notjump" || program[i]=="!j") {
     //bad workaround to make sure we get the correct memory tag
     let tempCopyOfTag = program[i+1]
     program[i+1] = " "
