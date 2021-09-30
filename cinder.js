@@ -1,7 +1,7 @@
-runThis = "5 5 * 0 load *"
+let runThis = "5 7 -"
 
-program = [];
-memory = [];
+let program = [];
+let memory = [];
 
 program = runThis.split(" ");
 for(let i = 0; i < program.length; i++) {
@@ -11,34 +11,33 @@ for(let i = 0; i < program.length; i++) {
   }
   //addition
   if(program[i] == "+"){
-    a = +memory[memory.length - 1]
-    b = +memory[memory.length - 2]
+    let a = +memory[memory.length - 1]
+    let b = +memory[memory.length - 2]
     memory.push(a+b+"")
   }
   //subtration
   if(program[i] == "-"){
-    a = +memory[memory.length - 1]
-    b = +memory[memory.length - 2]
+    let a = +memory[memory.length - 1]
+    let b = +memory[memory.length - 2]
     memory.push(a-b+"")
   }
   //multiplication
   if(program[i] == "*"){
-    a = +memory[memory.length - 1]
-    b = +memory[memory.length - 2]
+    let a = +memory[memory.length - 1]
+    let b = +memory[memory.length - 2]
     memory.push(a*b+"")
   }
   //division
   if(program[i] == "/"){
-    a = +memory[memory.length - 1]
-    b = +memory[memory.length - 2]
+    let a = +memory[memory.length - 1]
+    let b = +memory[memory.length - 2]
     memory.push(a/b+"")
   }
   //load from stack index
   if(program[i]=="load") {
-    a = +memory[memory.length - 1]
+    let a = +memory[memory.length - 1]
     memory.splice(memory.length - 1, 1)
-    loadItem = memory[a]
-    memory.push(loadItem)
+    memory.push(memory[a])
   }
 }
 console.log(memory)
