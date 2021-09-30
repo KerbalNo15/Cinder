@@ -1,4 +1,4 @@
-//Fibbonacci number generator. Change the first memory value to sequence index n-2
+
 let runThis = '1000 0 "multiple_of_3" "multiple_of_5" "end" :Z load 0 1 - store 0 print 0 load 0 3 % notjump :A 5 1 print 2 :A del 5 load 0 5 % notjump :B 5 1 print 3 :B del 5 notjump :Z 0 1 print 4'
 
 let program = [];
