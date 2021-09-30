@@ -120,6 +120,40 @@ for(let i = 0; i < program.length; i++) {
       if(debug) console.log("Did not jump")
     }
   }
+  //jump to instruction if {instruction, a, b} register a < register b
+  if(program[i] == "ltjump" || program[i]=="<") {
+    //bad workaround to make sure we get the correct memory tag
+    let tempCopyOfTag = program[i+1]
+    program[i+1] = " "
+    let instruction = program.indexOf(tempCopyOfTag)
+    program[i+1] = tempCopyOfTag
+    let index = +program[i+2]
+    let otherIndex = +program[i+3]
+    if(memory[index] < memory[otherIndex]){
+      i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
+      if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
+    } else {
+      i = i + 3
+      if(debug) console.log("Did not jump")
+    }
+  }
+  //jump to instruction if {instruction, a, b} register a > register b
+  if(program[i] == "gtjump" || program[i]==">") {
+    //bad workaround to make sure we get the correct memory tag
+    let tempCopyOfTag = program[i+1]
+    program[i+1] = " "
+    let instruction = program.indexOf(tempCopyOfTag)
+    program[i+1] = tempCopyOfTag
+    let index = +program[i+2]
+    let otherIndex = +program[i+3]
+    if(memory[index] > memory[otherIndex]){
+      i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
+      if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
+    } else {
+      i = i + 3
+      if(debug) console.log("Did not jump")
+    }
+  }
 
   if(debug){
     console.log(memory)
