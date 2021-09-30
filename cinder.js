@@ -1,5 +1,5 @@
 
-let runThis = '1000 0 "multiple_of_3" "multiple_of_5" "end" :Z load 0 1 - store 0 print 0 load 0 3 % notjump :A 5 1 print 2 :A del 5 load 0 5 % notjump :B 5 1 print 3 :B del 5 notjump :Z 0 1 print 4'
+let runThis = '0 1000 0 "multiple_of_3" "multiple_of_5" "end" :Z load 0 1 + store 0 print 0 load 0 3 % notjump :A 6 2 print 3 :A del 6 load 0 5 % notjump :B 6 2 print 4 :B del 6 ltjump :Z 0 1 print 5'
 
 let program = [];
 let memory = [];
@@ -129,7 +129,8 @@ for(let i = 0; i < program.length; i++) {
     program[i+1] = tempCopyOfTag
     let index = +program[i+2]
     let otherIndex = +program[i+3]
-    if(memory[index] < memory[otherIndex]){
+    if(debug) console.log("ltjump: " + memory[index]+" < " + memory[otherIndex] + " this is " + (memory[index] < memory[otherIndex]))
+    if(+memory[index] < +memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
       if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
     } else {
@@ -146,7 +147,8 @@ for(let i = 0; i < program.length; i++) {
     program[i+1] = tempCopyOfTag
     let index = +program[i+2]
     let otherIndex = +program[i+3]
-    if(memory[index] > memory[otherIndex]){
+    if(debug) console.log("gtjump: " + memory[index]+" > " + memory[otherIndex] + " this is " + (memory[index] > memory[otherIndex]))
+    if(+memory[index] > +memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
       if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
     } else {
