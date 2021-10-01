@@ -1,5 +1,5 @@
 
-let runThis = '0 1000 0 "multiple_of_3" "multiple_of_5" "end" :Z load 0 1 + store 0 print 0 load 0 3 % notjump :A 6 2 print 3 :A del 6 load 0 5 % notjump :B 6 2 print 4 :B del 6 ltjump :Z 0 1 print 5'
+let runThis = '[a,b,c,d,e] "a" storeelement 0 5 print 0'
 
 let program = [];
 let memory = [];
@@ -9,13 +9,17 @@ program = runThis.split(" ");
 for(let i = 0; i < program.length; i++) {
   //push numbers directly into the stack
   if(program[i].match("[0-9]") != null){
-    memory.push(program[i])
+    memory.push(program[i].substr(1, program[i].length-2))
   }
-  //ignore memory tags
+  //ignore memory labels
   else if(program[i].match(":[A-Z]")){}
-  //push arbitrary strings directly to the stack
+  //push arbitrary strings directly to the stack with the quotation marks removed
   else if(program[i].match('"[^"]*"')) {
-    memory.push(program[i])
+    memory.push(program[i].substr(1, program[i].length-2))
+  }
+  //push arrays directly to the stack with the brackets removed
+  else if(program[i].match('\[[^"]*\]')) {
+    memory.push(program[i].substr(1, program[i].length-2))
   }
   //addition
   if(program[i] == "+"){
@@ -122,7 +126,7 @@ for(let i = 0; i < program.length; i++) {
   }
   //jump to instruction if {instruction, a, b} register a < register b
   if(program[i] == "ltjump" || program[i]=="<") {
-    //bad workaround to make sure we get the correct memory tag
+    //bad workaround to make sure we get the correct memory label
     let tempCopyOfTag = program[i+1]
     program[i+1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
@@ -140,7 +144,7 @@ for(let i = 0; i < program.length; i++) {
   }
   //jump to instruction if {instruction, a, b} register a > register b
   if(program[i] == "gtjump" || program[i]==">") {
-    //bad workaround to make sure we get the correct memory tag
+    //bad workaround to make sure we get the correct memory label
     let tempCopyOfTag = program[i+1]
     program[i+1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
@@ -155,6 +159,27 @@ for(let i = 0; i < program.length; i++) {
       i = i + 3
       if(debug) console.log("Did not jump")
     }
+  }
+  //pull an element from an array and push it onto the stack
+  if(program[i] == "loadelement" || program[i] == "e") {
+    let array = program[i + 1]
+    let index = program[i + 2]
+    i = i + 2
+    memory.push(memory[array][index])
+    if(debug) console.log("Pulled element from array at index " + array)
+  }
+  //pop the last element off of the stack and push it to the index of an array(replace the element already there)
+  if(program[i] == "storeelement" || program[i] == "e") {
+    let array = program[i + 1]
+    let index = program[i + 2]
+    i = i + 2
+    let requestedArray = memory[array]
+    //arghhh immutable strings making my life difficult. This has got to be sooo slow.
+    let convertedArray = requestedArray.split(',')
+    convertedArray[index] = memory[memory.length - 1]
+    memory.splice(array, 1, convertedArray.join(','))
+    memory.splice(memory.length - 1, 1)
+    if(debug) console.log("Modified the array located at memory index " + array)
   }
 
   if(debug){
