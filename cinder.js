@@ -1,5 +1,5 @@
 
-let runThis = '[a,b,c,d,e] 0 storeelement 0 5 print 0'
+let runThis = '0 1 2 3 4 load -2 print -1'
 
 let program = [];
 let memory = [];
@@ -64,6 +64,9 @@ for(let i = 0; i < program.length; i++) {
   //change value at stack index. This one is kind of weird. "A 15 store A" would push 15 to A
   if(program[i]=="store" || program[i]=="s") {
     let a = +program[i+1]
+    if(a < 0) {
+      a = memory.length + a
+    }
     if(debug) console.log("changing address " + a + " to " + memory[memory.length - 1])
     memory.splice(a, 1, memory[memory.length - 1])
     memory.splice(memory.length - 1, 1)
@@ -72,21 +75,30 @@ for(let i = 0; i < program.length; i++) {
   //load from stack index
   if(program[i]=="load" || program[i]=="l") {
     let a = +program[i+1]
+    if(a < 0) {
+      a = memory.length + a
+    }
     i = i + 1
     memory.push(memory[a])
     if(debug) console.log("Loaded " + memory[a] + " from index " + a)
   }
-  //delete stack item at index
+  //delete stack item at index. This one is special because if you give it a negative number it counts downward from the top of the stack
   if(program[i]=="del" || program[i]=="d") {
     let a = +program[i+1]
     i = i + 1
-    memory.splice(a, 1)
+    if(a < 0) {
+      a = memory.length + a
+    }
+      memory.splice(a, 1)
     if(debug) console.log("deleted item at address " + a)
   }
   //print value at memory location
   if(program[i] == "print" || program[i]=="p") {
     let a = +program[i+1]
     i = i + 1
+    if(a < 0) {
+      a = memory.length + a
+    }
     console.log(memory[a])
     if(debug) console.log("Printed value at index " + a)
   }
