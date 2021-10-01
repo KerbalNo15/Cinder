@@ -1,5 +1,5 @@
 
-let runThis = '[a,b,c,d,e] "a" storeelement 0 5 print 0'
+let runThis = '[a,b,c,d,e] 0 storeelement 0 5 print 0'
 
 let program = [];
 let memory = [];
@@ -9,15 +9,15 @@ program = runThis.split(" ");
 for(let i = 0; i < program.length; i++) {
   //push numbers directly into the stack
   if(program[i].match("[0-9]") != null){
-    memory.push(program[i].substr(1, program[i].length-2))
+    memory.push(program[i])
   }
   //ignore memory labels
   else if(program[i].match(":[A-Z]")){}
-  //push arbitrary strings directly to the stack with the quotation marks removed
+  //push arbitrary strings directly to the stack with their quotation marks removed
   else if(program[i].match('"[^"]*"')) {
     memory.push(program[i].substr(1, program[i].length-2))
   }
-  //push arrays directly to the stack with the brackets removed
+  //push arrays directly to the stack with their brackets removed
   else if(program[i].match('\[[^"]*\]')) {
     memory.push(program[i].substr(1, program[i].length-2))
   }
@@ -161,7 +161,7 @@ for(let i = 0; i < program.length; i++) {
     }
   }
   //pull an element from an array and push it onto the stack
-  if(program[i] == "loadelement" || program[i] == "e") {
+  if(program[i] == "loadelement" || program[i] == "le") {
     let array = program[i + 1]
     let index = program[i + 2]
     i = i + 2
@@ -169,7 +169,7 @@ for(let i = 0; i < program.length; i++) {
     if(debug) console.log("Pulled element from array at index " + array)
   }
   //pop the last element off of the stack and push it to the index of an array(replace the element if it's already there)
-  if(program[i] == "storeelement" || program[i] == "e") {
+  if(program[i] == "storeelement" || program[i] == "se") {
     let array = program[i + 1]
     let index = program[i + 2]
     i = i + 2
