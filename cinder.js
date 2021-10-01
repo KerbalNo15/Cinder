@@ -82,7 +82,7 @@ for(let i = 0; i < program.length; i++) {
     memory.push(memory[a])
     if(debug) console.log("Loaded " + memory[a] + " from index " + a)
   }
-  //delete stack item at index. This one is special because if you give it a negative number it counts downward from the top of the stack
+  //delete stack item at index.
   if(program[i]=="del" || program[i]=="d") {
     let a = +program[i+1]
     i = i + 1
