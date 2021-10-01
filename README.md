@@ -5,8 +5,7 @@ Interpreted or Compiled, stack-based, RPN programming language.
   * Interpreted or Compiled  
   * Stack Based  
   * Uses Reverse Polish Notation for math functions  
-  * Lightweight  
-  * Useless  
+  * Lightweight    
   * Optimized for job security- very difficult to read.  
   * Has verbose debugging  
 
