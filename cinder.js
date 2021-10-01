@@ -168,7 +168,7 @@ for(let i = 0; i < program.length; i++) {
     memory.push(memory[array][index])
     if(debug) console.log("Pulled element from array at index " + array)
   }
-  //pop the last element off of the stack and push it to the index of an array(replace the element already there)
+  //pop the last element off of the stack and push it to the index of an array(replace the element if it's already there)
   if(program[i] == "storeelement" || program[i] == "e") {
     let array = program[i + 1]
     let index = program[i + 2]
