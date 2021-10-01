@@ -1,8 +1,8 @@
 # Cinder
-Interpreted or Compiled, stack-based, RPN programming language.
+Interpreted or Compiled, stack-based, RPN programming language/instruction set.
 
 ## Defining Features:
-  * Interpreted or Compiled  
+  * Interpreted or Compiled(to a script, not assembly)  
   * Stack Based  
   * Uses Reverse Polish Notation for math functions  
   * Lightweight    
