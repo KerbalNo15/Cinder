@@ -1,11 +1,13 @@
 
-let runThis = '2 3 4 5 6 memlen print -1'
+let runThis = '"Hello|World!" print 0'
 
 let program = [];
 let memory = [];
 let debug = false
 
-program = runThis.split(" "); //split the input into instructions. Side effect of using whitespcae as a divisor is that strings and arrays cannot contain spaces.
+program = runThis.split(" "); //split the input into instructions.
+//A side effect of using whitespace as a divisor is that strings and arrays cannot contain spaces. To work around this,
+//the pipe character "|" will be replaced with a space when strings get printed
 
 //The instuction loop. This is essentially one clock cycle per iteration.
 for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
@@ -114,7 +116,7 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
     if(a < 0) {
       a = memory.length + a
     }
-    console.log(memory[a])
+    console.log(memory[a].split("|").join(" "))
     if(debug) console.log("Printed value at index " + a)
   }
 
