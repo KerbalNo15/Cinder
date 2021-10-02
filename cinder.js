@@ -1,5 +1,5 @@
 
-let runThis = '0 1 2 3 4 load -2 print -1'
+let runThis = '2 3 4 5 6 memlen print -1'
 
 let program = [];
 let memory = [];
@@ -7,7 +7,7 @@ let debug = false
 
 program = runThis.split(" "); //split the input into instructions. Side effect of using whitespcae as a divisor is that strings and arrays cannot contain spaces.
 
-//The instuction loop. This is essentially on clock cycle per iteration.
+//The instuction loop. This is essentially one clock cycle per iteration.
 for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
 
   //push numbers directly into the stack
@@ -116,6 +116,12 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
     }
     console.log(memory[a])
     if(debug) console.log("Printed value at index " + a)
+  }
+
+  //Copy the length of the memory to the top of the stack. Essentially calling memory.length()
+  if(program[i] == "memlen" || program[i]=="ml") {
+    memory.push(memory.length)
+    if(debug) console.log("Copied the memory length to the top of the stack")
   }
 
   //jump to instruction number if the values in the two specified regisers are equal
