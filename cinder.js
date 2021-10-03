@@ -1,5 +1,5 @@
 
-let runThis = '"Hello|World!" print 0'
+let runThis = '0 1000 0 "multiple|of|3" "multiple|of|5" "end" :Z 0 load 1 + 0 store 0 print 0 load 3 % 6 2 :A notjump 3 print :A 6 del 0 load 5 % 6 2 :B notjump 4 print :B 6 del 0 1 :Z ltjump 5 print'
 
 let program = [];
 let memory = [];
@@ -51,7 +51,7 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
   //multiplication
   if(program[i] == "*"){
     let a = +memory[memory.length - 1]
-    let b = +memory[memory.length - 2]
+    let b = +memory[memory - 2]
     memory.splice(memory.length - 2, 2)
     memory.push(b*a+"")
     if(debug) console.log(b + " times " + a + " is " + (b*a+""))
@@ -77,31 +77,31 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
 
   //change value at stack index. This one is kind of weird. "A 15 store 0" would push 15 to A
   if(program[i]=="store" || program[i]=="s") {
-    let a = +program[i+1]
+    let a = +memory[memory.length - 1]
     if(a < 0) {
       a = memory.length + a
     }
-    if(debug) console.log("changing address " + a + " to " + memory[memory.length - 1])
-    memory.splice(a, 1, memory[memory.length - 1])
-    memory.splice(memory.length - 1, 1)
-    i = i + 1
+    if(debug) console.log("changing address " + a + " to " + memory[memory.length - 2])
+    memory.splice(a, 1, memory[memory.length - 2])
+    memory.splice(memory.length - 2, 2)
+
   }
 
-  //load from stack index and plce on top of the stack
+  //load from stack index and place on top of the stack
   if(program[i]=="load" || program[i]=="l") {
-    let a = +program[i+1]
+    let a = +memory[memory.length - 1]
     if(a < 0) {
       a = memory.length + a
     }
-    i = i + 1
     memory.push(memory[a])
+    memory.splice(memory.length - 2, 1)
     if(debug) console.log("Loaded " + memory[a] + " from index " + a)
   }
 
   //delete stack item at index.
   if(program[i]=="del" || program[i]=="d") {
-    let a = +program[i+1]
-    i = i + 1
+    let a = +memory[memory.length - 1]
+    memory.splice(memory.length - 1, 1)
     if(a < 0) {
       a = memory.length + a
     }
@@ -111,8 +111,8 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
 
   //print value at memory location
   if(program[i] == "print" || program[i]=="p") {
-    let a = +program[i+1]
-    i = i + 1
+    let a = +memory[memory.length - 1]
+    memory.splice(memory.length - 1, 1)
     if(a < 0) {
       a = memory.length + a
     }
@@ -128,85 +128,90 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
 
   //jump to instruction number if the values in the two specified regisers are equal
   if(program[i] == "jump" || program[i]=="j") {
-    //bad workaround to make sure we get the correct memory label
-    let tempCopyOfTag = program[i+1]
-    program[i+1] = " "
+    //really bad workaround to make sure we get the correct memory label
+    let tempCopyOfTag = program[i-1]
+    program[i-1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
-    program[i+1] = tempCopyOfTag
-    let index = +program[i+2]
-    let otherIndex = +program[i+3]
+    program[i-1] = tempCopyOfTag
+    let index = +memory[memory.length - 2]
+    let otherIndex = +memory[memory.length - 1]
+    memory.splice(memory.length - 2, 2)
 
     if(memory[index] == memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
     if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
   } else {
-    i = i + 3
     if(debug) console.log("Did not jump")
     }
   }
 
   //jump to instruction number if the values in the two specified regisers are not equal
   if(program[i] == "notjump" || program[i]=="!j") {
-    //bad workaround to make sure we get the correct memory label
-    let tempCopyOfTag = program[i+1]
-    program[i+1] = " "
+    //really bad workaround to make sure we get the correct memory label
+    let tempCopyOfTag = program[i-1]
+    program[i-1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
-    program[i+1] = tempCopyOfTag
-    let index = +program[i+2]
-    let otherIndex = +program[i+3]
+    program[i-1] = tempCopyOfTag
+    let index = +memory[memory.length - 2]
+    let otherIndex = +memory[memory.length - 1]
+    memory.splice(memory.length - 2, 2)
     if(memory[index] != memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
       if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
     } else {
-      i = i + 3
       if(debug) console.log("Did not jump")
     }
   }
 
   //jump to instruction if {instruction, a, b} register a < register b
   if(program[i] == "ltjump" || program[i]=="<") {
-    //bad workaround to make sure we get the correct memory label
-    let tempCopyOfTag = program[i+1]
-    program[i+1] = " "
+    //really bad workaround to make sure we get the correct memory label
+    let tempCopyOfTag = program[i-1]
+    program[i-1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
-    program[i+1] = tempCopyOfTag
-    let index = +program[i+2]
-    let otherIndex = +program[i+3]
+    program[i-1] = tempCopyOfTag
+    let index = +memory[memory.length - 2]
+    let otherIndex = +memory[memory.length - 1]
+    memory.splice(memory.length - 2, 2)
     if(debug) console.log("ltjump: " + memory[index]+" < " + memory[otherIndex] + " this is " + (memory[index] < memory[otherIndex]))
     if(+memory[index] < +memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
       if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
     } else {
-      i = i + 3
       if(debug) console.log("Did not jump")
     }
   }
 
   //jump to instruction if {instruction, a, b} register a > register b
   if(program[i] == "gtjump" || program[i]==">") {
-    //bad workaround to make sure we get the correct memory label
-    let tempCopyOfTag = program[i+1]
-    program[i+1] = " "
+    //really bad workaround to make sure we get the correct memory label
+    let tempCopyOfTag = program[i-1]
+    program[i-1] = " "
     let instruction = program.indexOf(tempCopyOfTag)
-    program[i+1] = tempCopyOfTag
-    let index = +program[i+2]
-    let otherIndex = +program[i+3]
+    program[i-1] = tempCopyOfTag
+    let index = +memory[memory.length - 2]
+    let otherIndex = +memory[memory.length - 1]
+    memory.splice(memory.length - 2, 2)
     if(debug) console.log("gtjump: " + memory[index]+" > " + memory[otherIndex] + " this is " + (memory[index] > memory[otherIndex]))
     if(+memory[index] > +memory[otherIndex]){
       i = instruction - 1 //one less because i gets incremented at the end of the instruction loop
       if(debug) console.log("jumped to instruction at address " + instruction + ", which is " + program[instruction])
     } else {
-      i = i + 3
       if(debug) console.log("Did not jump")
     }
   }
 
   //pull an element from an array and push it onto the stack
   if(program[i] == "loadelement" || program[i] == "le") {
-    let array = program[i + 1]
-    let index = program[i + 2]
-    i = i + 2
-    memory.push(memory[array][index])
+    let array = +memory[memory.length - 2]
+    let index = +memory[memory.length - 1]
+    memory.splice(memory.length - 2, 2)
+    let requestedArray = memory[array]
+    let convertedArray = requestedArray.split(',')
+    if(index < 0) {
+      index = convertedArray.length + index
+    }
+    memory.push(convertedArray[index])
     if(debug) console.log("Pulled element from array at index " + array)
   }
 
@@ -214,15 +219,17 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
   //If you give it an index that is out of bounds of the array, it will try to fit it in by adding empty elements.
   //I have not tested whether or not this works in the negative direction.
   if(program[i] == "storeelement" || program[i] == "se") {
-    let array = program[i + 1]
-    let index = program[i + 2]
-    i = i + 2
+    let array = +memory[memory.length - 2]
+    let index = +memory[memory.length - 1]
     let requestedArray = memory[array]
     //arghhh immutable strings making my life difficult. This has got to be sooo slow.
     let convertedArray = requestedArray.split(',')
-    convertedArray[index] = memory[memory.length - 1]
+    if(index < 0) {
+      index = convertedArray.length + index
+    }
+    convertedArray[index] = memory[memory.length - 3]
     memory.splice(array, 1, convertedArray.join(','))
-    memory.splice(memory.length - 1, 1)
+    memory.splice(memory.length - 3, 3)
     if(debug) console.log("Modified the array located at memory index " + array)
   }
 

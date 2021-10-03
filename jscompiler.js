@@ -13,10 +13,10 @@ for(let i = 0; i < program.length; i++){
   //number assignment by variable
   if(element.match("[a-zA-Z]=[a-zA-Z]")){
     let statement = element.split("=")
-    output.push("load")
     output.push(variableMap.get(statement[1]))
-    output.push("store")
+    output.push("load")
     output.push(variableMap.get(statement[0]))
+    output.push("store")
   }
   if(element.match("if([a-zA-Z])")){
     console.log("If statement")
