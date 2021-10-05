@@ -4,8 +4,7 @@ Interpreted or Compiled, stack-based, RPN programming language/instruction set.
 ## Defining Features:
   * Interpreted or Compiled (to a script, not assembly)  
   * Stack Based  
-  * Uses Reverse Polish Notation for math functions  
-  * Lightweight    
+  * Uses Reverse Polish Notation
   * Optimized for job security- very difficult to read.  
   * Has verbose debugging  
   * Sort of sandboxed. Sandboxed inside of the interpreter, but not memory-safe.  
