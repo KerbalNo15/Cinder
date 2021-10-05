@@ -1,8 +1,11 @@
-//Fibonacci number generator. Change the first memory value to n-2 where n is the nth fibonacci number
+//Fibonacci number generator. Change the first memory value to n-2 where n is the nth fibonacci number.
 '19 0 1 2 :A 0 load 1 - 0 store 2 load 3 load + 2 del 0 1 :A notjump 3 print'
 
 //Test if n is even or odd
 '32 "even" "odd" 0 0 load 2 % 0 print 3 4 :A jump 2 print 0 0 :B jump :A 4 del 1 print :B'
 
-//Prints multiples of 3 or 5 from 1 to n. The second register holds n.
-'0 1000 0 "multiple|of|3" "multiple|of|5" "end" :Z 0 load 1 + 0 store 0 print 0 load 3 % 6 2 :A notjump 3 print :A 6 del 0 load 5 % 6 2 :B notjump 4 print :B 6 del 0 1 :Z ltjump 5 print'  
+//Print multiples of 3 or 5 from 1 to n. The second register holds n.
+'0 1000 0 "multiple|of|3" "multiple|of|5" "end" :Z 0 load 1 + 0 store 0 print 0 load 3 % 6 2 :A notjump 3 print :A 6 del 0 load 5 % 6 2 :B notjump 4 print :B 6 del 0 1 :Z ltjump 5 print'
+
+//Print all the factors of n (except n) where memory[0] is n. At the end of execution, print out all the discovered factors as an array.
+'40 0 0 [0] "s" :A :C 4 del 1 load 1 + 1 store 0 load 1 load % 2 4 :A notjump 0 1 :B jump 1 print 1 load 3 3 arrlen storeelement 2 2 :C jump :B 3 0 delelement 3 print'

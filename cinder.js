@@ -19,14 +19,15 @@ export function execute(runThis, debug = false){
     //ignore memory labels. Memory labels are used to tell if statements where to jump to.
     else if(program[i].match(":[A-Z]")){}
 
-    //push arbitrary strings directly to the stack with their quotation marks removed
+    //push strings directly to the stack with their quotation marks removed
     else if(program[i].match('"[^"]*"')) {
       memory.push(program[i].substr(1, program[i].length-2))
+      if(debug) console.log("Pushed an array")
     }
 
     //push arrays directly to the stack with their brackets removed
     else if(program[i].match('\[[^"]*\]')) {
-      memory.push(program[i].substr(1, program[i].length-2))
+      memory.push(program[i])
     }
 
     //addition
@@ -213,7 +214,7 @@ export function execute(runThis, debug = false){
       let array = +memory[memory.length - 2]
       let index = +memory[memory.length - 1]
       memory.splice(memory.length - 2, 2)
-      let requestedArray = memory[array]
+      let requestedArray = memory[array].substr(1, memory[array].length-2)
       let convertedArray = requestedArray.split(',')
       if(index < 0) {
         index = convertedArray.length + index
@@ -228,14 +229,14 @@ export function execute(runThis, debug = false){
     if(program[i] == "storeelement" || program[i] == "se") {
       let array = +memory[memory.length - 2]
       let index = +memory[memory.length - 1]
-      let requestedArray = memory[array]
+      let requestedArray = memory[array].substr(1, memory[array].length-2)
       //arghhh immutable strings making my life difficult. This has got to be sooo slow.
       let convertedArray = requestedArray.split(',')
       if(index < 0) {
         index = convertedArray.length + index
       }
       convertedArray[index] = memory[memory.length - 3]
-      memory.splice(array, 1, convertedArray.join(','))
+      memory.splice(array, 1, "[" + convertedArray.join(',') + "]")
       memory.splice(memory.length - 3, 3)
       if(debug) console.log("Modified the array located at memory index " + array)
     }
@@ -244,12 +245,29 @@ export function execute(runThis, debug = false){
     if(program[i] == "arrlen" || program[i] == "al") {
       let array = +memory[memory.length - 1]
       memory.splice(memory.length - 1, 1)
-      let requestedArray = memory[array]
+      let requestedArray = memory[array].substr(1, memory[array].length-2)
       let convertedArray = requestedArray.split(',')
       let arrayLength = convertedArray.length
       memory.push(arrayLength)
       if(debug) console.log("The requested array's length is " + arrayLength)
     }
+
+    //delete an element from an array
+    if(program[i] == "delelement" || program[i] == "de") {
+      let array = +memory[memory.length - 2]
+      let index = +memory[memory.length - 1]
+      let requestedArray = memory[array].substr(1, memory[array].length-2)
+      //arghhh immutable strings making my life difficult. This has got to be sooo slow.
+      let convertedArray = requestedArray.split(',')
+      if(index < 0) {
+        index = convertedArray.length + index
+      }
+      convertedArray.splice(index, 1)
+      memory.splice(array, 1, "[" + convertedArray.join(',') + "]")
+      memory.splice(memory.length - 3, 3)
+      if(debug) console.log("Modified the array located at memory index " + array)
+    }
+
 
     if(debug){
       console.log(memory) //dump the memory after each instruction
