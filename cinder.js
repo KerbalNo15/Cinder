@@ -1,5 +1,4 @@
-
-let runThis = '0 1000 0 "multiple|of|3" "multiple|of|5" "end" :Z 0 load 1 + 0 store 0 print 0 load 3 % 6 2 :A notjump 3 print :A 6 del 0 load 5 % 6 2 :B notjump 4 print :B 6 del 0 1 :Z ltjump 5 print'
+let runThis = '"Hello|World!" -1 print'
 
 let program = [];
 let memory = [];
@@ -116,7 +115,15 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
     if(a < 0) {
       a = memory.length + a
     }
-    console.log(memory[a].split("|").join(" "))
+    let result = ""
+
+    if((memory[a] + "").includes("|")) {
+      result = memory[a].split("|").join(" ")
+    } else {
+      result = memory[a]
+    }
+
+    console.log(result)
     if(debug) console.log("Printed value at index " + a)
   }
 
@@ -231,6 +238,16 @@ for(let i = 0; i < program.length; i++) { //iterate through the instruction loop
     memory.splice(array, 1, convertedArray.join(','))
     memory.splice(memory.length - 3, 3)
     if(debug) console.log("Modified the array located at memory index " + array)
+  }
+
+  if(program[i] == "arrlen" || program[i] == "al") {
+    let array = +memory[memory.length - 1]
+    memory.splice(memory.length - 1, 1)
+    let requestedArray = memory[array]
+    let convertedArray = requestedArray.split(',')
+    let arrayLength = convertedArray.length
+    memory.push(arrayLength)
+    if(debug) console.log("The requested array's length is " + arrayLength)
   }
 
   if(debug){
